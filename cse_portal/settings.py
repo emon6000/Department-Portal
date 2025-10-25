@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import dj_database_url
 
 from pathlib import Path
 
@@ -22,13 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%7r$ab()x*!)4rbf5pk95*1_0=v(wjh(nn%sj!luz)oieo24#u'
+# SECRET_KEY = 'django-insecure-%7r$ab()x*!)4rbf5pk95*1_0=v(wjh(nn%sj!luz)oieo24#u'
+# This reads the secret key from an "environment variable"
+# This keeps your key secret and safe, out of your code.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-old-weak-secret-key-as-a-fallback')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+# DEBUG is 'True' only if the DJANGO_DEBUG environment variable is set to 'True'
+# By default, it will be 'False' in production, which is more secure.
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+# We allow 'localhost' for your PC and '.onrender.com' for our future site.
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -46,6 +58,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,6 +90,13 @@ WSGI_APPLICATION = 'cse_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,6 +104,14 @@ DATABASES = {
     }
 }
 
+# This checks if a DATABASE_URL is set (it will be on Render)
+# If it is, it uses that for the database instead of SQLite.
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -119,7 +147,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# STATIC_URL = 'static/'
 STATIC_URL = 'static/'
+
+# This tells Django where to find static files in development
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# This is the folder where 'collectstatic' will put all files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# This tells WhiteNoise to use high-compression
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
