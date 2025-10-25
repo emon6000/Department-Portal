@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'accounts',
     'classroom',
     'notices',
+    'cloudinary_storage',  # <-- ADD THIS
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -171,10 +173,22 @@ import os
 # --- Media Files (User Uploads) Configuration ---
 
 # The public URL to access the media files
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 
-# The absolute path to the folder where user-uploaded files will be stored
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# # The absolute path to the folder where user-uploaded files will be stored
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# --- CLOUDINARY MEDIA FILE CONFIGURATION ---
+
+# These three are from your Cloudinary Dashboard
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# This tells Django to use Cloudinary for all media file uploads
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 LOGIN_URL = 'login'
