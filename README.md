@@ -1,4 +1,4 @@
-# CSE Department Portal
+# Department Portal
 
 A comprehensive web application built with Python and Django to manage a university's department. This portal provides different views and capabilities based on user roles (Admin, Teacher, Student, and Guest).
 
