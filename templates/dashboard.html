@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h2>Dashboard</h2>
+        <p class="lead">Welcome, {{ user.first_name|default:user.username }}!</p>
+
+        <div class="row">
+            <div class="col-md-8">
+
+                {% if user_role == 'admin' %}
+                <div class="alert alert-warning">
+                    <strong>Admin Panel:</strong>
+                    <p>You have full access to the site. Use the admin panel to manage users, batches, and rooms.</p>
+                    <a href="{% url 'admin:index' %}" class="btn btn-warning btn-sm">Go to Admin Panel</a>
+                </div>
+                {% elif user_role == 'teacher' %}
+                <div class="alert alert-info">
+                    <strong>Teacher Panel:</strong>
+                    <p>You can book classrooms and post to the teacher notice board.</p>
+                    <a href="{% url 'my-bookings' %}" class="btn btn-info btn-sm">View My Bookings</a>
+                </div>
+                {% elif user_role == 'student' %}
+                <div class="alert alert-info">
+                    <strong>Student Panel:</strong>
+                    <p>You can view your batch notices and classroom availability.</p>
+                </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        Notice Board
+
+                        {% if user_role == 'teacher' or user_role == 'admin' %}
+                            <a href="{% url 'update-teacher-notice' %}" class="btn btn-sm btn-outline-primary">Edit Notice</a>
+                        {% elif is_cr %}
+                            <a href="{% url 'update-batch-notice' %}" class="btn btn-sm btn-outline-primary">Edit Notice</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if notice %}
+                            <p class="card-text">{{ notice.content|linebreaks }}</p>
+                            <hr>
+                            <p class="card-text"><small class="text-muted">Last updated: {{ notice.updated_at|date:"F j, Y, g:i A" }}</small></p>
+                        {% else %}
+                            <p>No notices have been posted for you yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">My Account</h5>
+                        <p>
+                            <strong>Username:</strong> {{ user.username }}<br>
+
+                            {% if user_role == 'admin' %}
+                                <strong>Role:</strong> Administrator
+                            {% elif user_role == 'teacher' %}
+                                <strong>Role:</strong> Teacher
+                            {% elif user_role == 'student' %}
+                                <strong>Role:</strong> Student
+                                <br><strong>Batch:</strong> {{ user.userprofile.batch.name }}
+                            {% endif %}
+                        </p>
+
+                        {% if user_role != 'admin' %}
+                            <a href="{% url 'profile-update' %}" class="btn btn-secondary">Edit Profile</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>You are not logged in.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Classroom Availability</h1>
+    <p>This page shows the status of all classrooms right now and the schedule for the rest of the day.</p>
+
+    {% if user.is_authenticated and user.userprofile.role == 'teacher' %}
+        <a href="{% url 'create-booking' %}" class="btn btn-primary mb-3">
+            Book a Room
+        </a>
+    {% endif %}
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Room Name</th>
+                <th>Capacity</th>
+                <th>Current Status</th>
+                <th>Today's Schedule (Booked By)</th> </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.room_name }}</td>
+                <td>{{ room.capacity }}</td>
+                <td>
+                    {% if room.status == 'In Use' %}
+                        <span class="badge bg-danger">{{ room.status }}</span>
+                    {% else %}
+                        <span class="badge bg-success">{{ room.status }}</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    {% if room.todays_bookings %}
+                        <ul>
+                            {% for booking in room.todays_bookings %}
+                                <li>
+                                    <strong>{{ booking.teacher.first_name }}</strong>:
+                                    {{ booking.start_time|time:"g:i A" }} - {{ booking.end_time|time:"g:i A" }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No more bookings for today.</p>
+                    {% endif %}
+                </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

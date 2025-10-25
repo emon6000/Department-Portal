@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Confirm Deletion</h2>
+        <hr>
+        <p>
+            Are you sure you want to delete your booking for 
+            <strong>{{ booking.classroom.room_name }}</strong> 
+            from <strong>{{ booking.start_time|time:"g:i A" }}</strong> 
+            to <strong>{{ booking.end_time|time:"g:i A" }}</strong> 
+            on <strong>{{ booking.start_time|date:"F j, Y" }}</strong>?
+        </p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'my-bookings' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

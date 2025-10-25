@@ -1,0 +1,18 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3
+
+# User-uploaded files
+media/
+
+# VS Code settings
+.vscode/
+
+# OS-specific
+.DS_Store

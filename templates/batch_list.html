@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Select a Batch</h1>
+    <p>Please choose a batch to see the list of students.</p>
+
+    <div class="list-group">
+        {% for batch in batches %}
+            <a href="{% url 'student-list' batch.id %}" class="list-group-item list-group-item-action">
+                {{ batch.name }}
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

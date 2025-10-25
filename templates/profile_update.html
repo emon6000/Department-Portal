@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>Edit Your Profile</h2>
+        <hr>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h3>Account Details</h3>
+            {{ user_form.as_p }}
+
+            <h3>Profile Details</h3>
+            {{ profile_form.as_p }}
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

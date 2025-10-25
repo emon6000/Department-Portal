@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Our Faculty</h1>
+    <p>Meet the dedicated teachers of the CSE department.</p>
+
+    <div class="row">
+        {% for teacher in teachers %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+
+                {% if teacher.userprofile.profile_photo %}
+                    <img src="{{ teacher.userprofile.profile_photo.url }}" class="card-img-top" alt="{{ teacher.first_name }}'s photo">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x200.png?text=No+Photo" class="card-img-top" alt="No photo">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ teacher.first_name }} {{ teacher.last_name }}
+                    </h5>
+
+                    <p class="card-text">{{ teacher.userprofile.bio }}</p>
+
+                    <p class="card-text">
+                        <small class="text-muted">
+                            {{ teacher.email }}<br>
+                            {{ teacher.userprofile.phone }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

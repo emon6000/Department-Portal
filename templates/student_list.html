@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Students of {{ batch.name }}</h1>
+    
+    <div class="row">
+        {% for student in students %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                
+                {% if student.userprofile.profile_photo %}
+                    <img src="{{ student.userprofile.profile_photo.url }}" class="card-img-top" alt="{{ student.first_name }}'s photo">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x200.png?text=No+Photo" class="card-img-top" alt="No photo">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ student.first_name }} {{ student.last_name }}
+                        
+                        {% if student.userprofile.is_cr %}
+                            <span class="badge bg-primary">CR</span>
+                        {% endif %}
+                    </h5>
+                    
+                    <p class="card-text">{{ student.userprofile.bio }}</p>
+                    
+                    <p class="card-text">
+                        <small class="text-muted">
+                            {{ student.email }}<br>
+                            {{ student.userprofile.phone }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
